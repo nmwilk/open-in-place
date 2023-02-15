@@ -2,9 +2,11 @@ package com.nmwilkinson.openinplace
 
 import android.content.Context
 import android.graphics.*
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
+import kotlin.random.Random
 
 class OverlayView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -15,7 +17,7 @@ class OverlayView @JvmOverloads constructor(
     var closeListener: (() -> Unit)? = null
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.GREEN
+        color = 0x70000000.or(0x00FFFFFF.and(Random(SystemClock.currentThreadTimeMillis()).nextInt()))
         style = Paint.Style.FILL
     }
 
