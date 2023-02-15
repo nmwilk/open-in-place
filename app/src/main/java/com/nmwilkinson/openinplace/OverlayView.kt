@@ -1,5 +1,6 @@
 package com.nmwilkinson.openinplace
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.os.SystemClock
@@ -31,8 +32,9 @@ class OverlayView @JvmOverloads constructor(
         drawAtPoint?.let { canvas.drawCircle(it.x, it.y, width * 0.05f, paint) }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.action == MotionEvent.ACTION_UP) {
+        if (isEnabled && event?.action == MotionEvent.ACTION_UP) {
             drawAtPoint = PointF(event.x, event.y)
             invalidate()
             closeListener?.invoke()

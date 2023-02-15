@@ -2,18 +2,13 @@ package com.nmwilkinson.openinplace
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
 import com.nmwilkinson.openinplace.databinding.ActivityEditBinding
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.random.Random
+import timber.log.Timber
 
 class EditActivity : AppCompatActivity() {
     private var receivedUri: Uri? = null
@@ -52,10 +47,19 @@ class EditActivity : AppCompatActivity() {
         if (intent?.data != null) {
             handleIntent(intent)
         }
+
+        binding.editImage.text =
+            receivedUri?.let { "Editing Uri: $receivedUri" } ?: "Open a jpeg from a file manager"
     }
 
     private fun handleIntent(intent: Intent) {
-        if (intent.action == Intent.ACTION_EDIT) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            val hasWriteFlag = intent.flags.and(Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0
+            if (!hasWriteFlag) {
+                binding.editImage.text = "Sending app didn't grant a write permission"
+                binding.imageContainer.isEnabled = false
+            }
+            Timber.d("intent has write flag? $hasWriteFlag")
             if (intent.type?.startsWith("image/") == true) {
                 intent.data?.let {
                     receivedUri = it
